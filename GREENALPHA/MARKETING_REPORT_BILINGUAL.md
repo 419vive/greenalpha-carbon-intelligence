@@ -2,7 +2,7 @@
 
 ---
 
-## 📖 **English Version: The Journey That Changed Everything**
+## 📖 **English Version: In 6 Days, The Journey That Changed Everything**
 
 ### **Day 0: The $50 Billion Problem Nobody Could Solve**
 
@@ -142,7 +142,7 @@ I don't just write code. I print money and save planets.
 
 ---
 
-## 🐉 **中文版：改變一切的六天征程**
+## 🐉 **中文版：六天內，改變一切的征程**
 
 ### **第零天：無人能解的500億美元難題**
 
