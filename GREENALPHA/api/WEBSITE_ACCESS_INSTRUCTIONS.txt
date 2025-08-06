@@ -1,0 +1,66 @@
+🌱 GREENALPHA CARBON CALCULATOR - ACCESS INSTRUCTIONS
+=====================================================
+
+❌ PROBLEM: "Failed to fetch" error occurs when opening HTML file directly
+
+✅ SOLUTION: Access website through the web server, not file system
+
+CORRECT WAY TO ACCESS:
+=====================
+
+1. MAKE SURE SERVER IS RUNNING:
+   - Open terminal
+   - Run: cd "/Users/jerrylaivivemachi/DS PROJECT/project 3/GREENALPHA/api" 
+   - Run: python main.py
+   - Wait for: "Application startup complete"
+
+2. ACCESS VIA WEB BROWSER:
+   ✅ CORRECT: http://localhost:8000
+   ✅ CORRECT: http://localhost:8000/demo/
+   ✅ CORRECT: http://localhost:8000/demo/simple.html
+   
+   ❌ WRONG: Opening index.html or simple.html directly from file system
+   ❌ WRONG: file:///Users/jerrylaivivemachi/...html
+
+TESTING THE THREE SCENARIOS:
+===========================
+
+Once you access http://localhost:8000, you'll see:
+
+1. 📱 High-Impact Scenario (Smartphone China→USA)
+   - Click the button
+   - Should show: ~78.0 kg CO₂e
+   - Response time: <10ms
+
+2. 💻 Eco-Friendly Scenario (Laptop Germany→Japan)
+   - Click the button  
+   - Should show: ~167.8 kg CO₂e
+   - Response time: <10ms
+
+3. 👕 Fashion Industry (T-shirt India→UK)
+   - Click the button
+   - Should show: ~212.9 kg CO₂e
+   - Response time: <10ms
+
+TROUBLESHOOTING:
+===============
+
+If you see "Failed to fetch":
+- Check if you're using http://localhost:8000 (not file://)
+- Check if server is running (python main.py)
+- Check browser console for detailed errors
+
+If API is not responding:
+- Make sure port 8000 is not blocked
+- Check terminal for server startup messages
+- Try: curl http://localhost:8000/health
+
+VERIFICATION CHECKLIST:
+======================
+□ Server running (python main.py)
+□ Using http://localhost:8000 URL
+□ All three demo buttons work
+□ Results show in <10ms
+□ No "Failed to fetch" errors
+
+The issue was likely caused by opening the HTML files directly from the file system instead of through the web server. The API calls require the proper HTTP context to work correctly.

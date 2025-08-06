@@ -1,0 +1,1563 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GreenAlpha Carbon Footprint Engine",
+    "description": "Advanced carbon footprint calculation and sustainability analytics API with <500ms response time",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/carbon/calculate": {
+      "post": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Calculate Carbon Footprint",
+        "description": "Calculate carbon footprint for a product shipment\n\nThis endpoint calculates the complete carbon footprint including:\n- Production emissions (Scope 1 & 2)\n- Transportation emissions (Scope 3)\n- Carbon cost estimation\n- Trading opportunities\n- Detailed breakdown and uncertainty analysis\n\nResponse time target: <500ms for 95% of requests",
+        "operationId": "calculate_carbon_footprint_carbon_calculate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarbonCalculationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarbonCalculationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/calculate/batch": {
+      "post": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Calculate Batch Carbon Footprint",
+        "description": "Calculate carbon footprint for multiple products in batch\n\nProcesses up to 100 calculations in parallel for optimal performance.\nReturns individual results plus optional batch summary.",
+        "operationId": "calculate_batch_carbon_footprint_carbon_calculate_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchCalculationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/factors/emission": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Emission Factors",
+        "description": "Get available emission factors and their sources",
+        "operationId": "get_emission_factors_carbon_factors_emission_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/factors/country/{country_code}": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Country Factors",
+        "description": "Get country-specific emission factors",
+        "operationId": "get_country_factors_carbon_factors_country__country_code__get",
+        "parameters": [
+          {
+            "name": "country_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Country Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/transport/modes": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Transport Modes",
+        "description": "Get available transportation modes and their emission factors",
+        "operationId": "get_transport_modes_carbon_transport_modes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/products/catalog": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Product Catalog",
+        "description": "Get available products in the catalog",
+        "operationId": "get_product_catalog_carbon_products_catalog_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/countries/search": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Search Countries",
+        "description": "Search for countries by name or code",
+        "operationId": "search_countries_carbon_countries_search_get",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Search query for country name or code",
+              "title": "Query"
+            },
+            "description": "Search query for country name or code"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "description": "Maximum results to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum results to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/countries/{country_code}/emissions": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Country Emissions",
+        "description": "Get historical emissions data for a country",
+        "operationId": "get_country_emissions_carbon_countries__country_code__emissions_get",
+        "parameters": [
+          {
+            "name": "country_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Country Code"
+            }
+          },
+          {
+            "name": "start_year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start year for data",
+              "title": "Start Year"
+            },
+            "description": "Start year for data"
+          },
+          {
+            "name": "end_year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End year for data",
+              "title": "End Year"
+            },
+            "description": "End year for data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/stats/global": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Global Statistics",
+        "description": "Get global carbon emission statistics",
+        "operationId": "get_global_statistics_carbon_stats_global_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carbon/stats/performance": {
+      "get": {
+        "tags": [
+          "Carbon Calculation",
+          "Carbon Calculator"
+        ],
+        "summary": "Get Performance Statistics",
+        "description": "Get API and engine performance statistics",
+        "operationId": "get_performance_statistics_carbon_stats_performance_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommendations/recommend/suppliers": {
+      "post": {
+        "tags": [
+          "Supplier Recommendations"
+        ],
+        "summary": "Get Supplier Recommendations",
+        "description": "Get supplier recommendations based on Multi-Criteria Decision Analysis (MCDA).",
+        "operationId": "get_supplier_recommendations_recommendations_recommend_suppliers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRecommendationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommendations/recommend/alternatives/{supplier_id}": {
+      "get": {
+        "tags": [
+          "Supplier Recommendations"
+        ],
+        "summary": "Find Alternative Suppliers",
+        "description": "Find alternative suppliers similar to a given supplier.",
+        "operationId": "find_alternative_suppliers_recommendations_recommend_alternatives__supplier_id__get",
+        "parameters": [
+          {
+            "name": "supplier_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Supplier Id"
+            }
+          },
+          {
+            "name": "top_n",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 3,
+              "title": "Top N"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommendations/recommend/batch": {
+      "post": {
+        "tags": [
+          "Supplier Recommendations"
+        ],
+        "summary": "Placeholder for Batch Recommendations",
+        "description": "A placeholder endpoint for future bulk recommendation processing.\n\nIn a real implementation, this would likely be an asynchronous task.",
+        "operationId": "batch_recommendations_recommendations_recommend_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/RecommendationRequest"
+                },
+                "type": "array",
+                "title": "Requests"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/optimize/route": {
+      "post": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Optimize Single Route",
+        "description": "Get optimal transport routes for a single origin-destination pair",
+        "operationId": "optimize_single_route_transport_optimize_route_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/optimize/multimodal": {
+      "post": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Optimize Multimodal Routes",
+        "description": "Find optimal multimodal routes using intermediate hubs",
+        "operationId": "optimize_multimodal_routes_transport_optimize_multimodal_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/optimize/carbon-savings": {
+      "post": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Calculate Carbon Savings",
+        "description": "Calculate potential carbon savings by choosing optimal transport",
+        "operationId": "calculate_carbon_savings_transport_optimize_carbon_savings_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/locations": {
+      "get": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Get Available Locations",
+        "description": "Get list of available locations for route optimization",
+        "operationId": "get_available_locations_transport_locations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/optimize/batch": {
+      "post": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Optimize Batch Routes",
+        "description": "Optimize multiple routes in a single request",
+        "operationId": "optimize_batch_routes_transport_optimize_batch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultiRouteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transport/carbon-tax-rates": {
+      "get": {
+        "tags": [
+          "Transport Optimization"
+        ],
+        "summary": "Get Carbon Tax Rates",
+        "description": "Get current carbon tax rates by country",
+        "operationId": "get_carbon_tax_rates_transport_carbon_tax_rates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/credit-opportunities": {
+      "post": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Get Credit Opportunities",
+        "description": "Identify carbon credit generation opportunities",
+        "operationId": "get_credit_opportunities_arbitrage_arbitrage_credit_opportunities_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArbitrageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/price-differentials": {
+      "get": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Get Price Differentials",
+        "description": "Identify profitable price differentials between carbon markets",
+        "operationId": "get_price_differentials_arbitrage_arbitrage_price_differentials_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/market-intelligence": {
+      "get": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Get Market Intelligence",
+        "description": "Get current carbon market intelligence and pricing",
+        "operationId": "get_market_intelligence_arbitrage_arbitrage_market_intelligence_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/country-analysis/{country_code}": {
+      "post": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Analyze Country Emissions",
+        "description": "Analyze emission trends for a specific country",
+        "operationId": "analyze_country_emissions_arbitrage_arbitrage_country_analysis__country_code__post",
+        "parameters": [
+          {
+            "name": "country_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Country Code"
+            }
+          },
+          {
+            "name": "years",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "description": "Number of years to analyze",
+              "default": 5,
+              "title": "Years"
+            },
+            "description": "Number of years to analyze"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/comprehensive-report": {
+      "post": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Generate Comprehensive Report",
+        "description": "Generate comprehensive carbon arbitrage analysis report",
+        "operationId": "generate_comprehensive_report_arbitrage_arbitrage_comprehensive_report_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArbitrageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/regulatory-access": {
+      "get": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Get Regulatory Access",
+        "description": "Get regulatory access matrix for carbon markets by country",
+        "operationId": "get_regulatory_access_arbitrage_arbitrage_regulatory_access_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/market-opportunities-summary": {
+      "get": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Get Market Opportunities Summary",
+        "description": "Get high-level summary of current arbitrage opportunities",
+        "operationId": "get_market_opportunities_summary_arbitrage_arbitrage_market_opportunities_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arbitrage/arbitrage/roi-calculator": {
+      "post": {
+        "tags": [
+          "Carbon Arbitrage"
+        ],
+        "summary": "Calculate Arbitrage Roi",
+        "description": "Calculate ROI for specific arbitrage opportunity",
+        "operationId": "calculate_arbitrage_roi_arbitrage_arbitrage_roi_calculator_post",
+        "parameters": [
+          {
+            "name": "investment_amount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "description": "Investment amount in USD",
+              "title": "Investment Amount"
+            },
+            "description": "Investment amount in USD"
+          },
+          {
+            "name": "target_market",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Target market for arbitrage",
+              "title": "Target Market"
+            },
+            "description": "Target market for arbitrage"
+          },
+          {
+            "name": "volume_tonnes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "description": "Volume in tonnes CO2",
+              "title": "Volume Tonnes"
+            },
+            "description": "Volume in tonnes CO2"
+          },
+          {
+            "name": "holding_period_months",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "description": "Holding period in months",
+              "default": 6,
+              "title": "Holding Period Months"
+            },
+            "description": "Holding period in months"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Comprehensive health check endpoint",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "Root endpoint - redirect to demo",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api": {
+      "get": {
+        "summary": "Api Info",
+        "description": "API information endpoint",
+        "operationId": "api_info_api_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArbitrageRequest": {
+        "properties": {
+          "countries": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Countries",
+            "description": "Specific countries to analyze"
+          },
+          "min_volume_threshold": {
+            "type": "number",
+            "title": "Min Volume Threshold",
+            "description": "Minimum volume threshold in tonnes",
+            "default": 100000
+          },
+          "time_horizon_months": {
+            "type": "integer",
+            "title": "Time Horizon Months",
+            "description": "Analysis time horizon in months",
+            "default": 12
+          }
+        },
+        "type": "object",
+        "title": "ArbitrageRequest",
+        "description": "Request model for arbitrage analysis"
+      },
+      "BatchCalculationRequest": {
+        "properties": {
+          "calculations": {
+            "items": {
+              "$ref": "#/components/schemas/CarbonCalculationRequest"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Calculations",
+            "description": "List of calculations (max 100)"
+          },
+          "include_summary": {
+            "type": "boolean",
+            "title": "Include Summary",
+            "description": "Include batch summary",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "calculations"
+        ],
+        "title": "BatchCalculationRequest",
+        "description": "Batch carbon footprint calculation request"
+      },
+      "CarbonCalculationRequest": {
+        "properties": {
+          "product_name": {
+            "type": "string",
+            "title": "Product Name",
+            "description": "Product name or category"
+          },
+          "quantity": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity",
+            "description": "Quantity of products",
+            "default": 1.0
+          },
+          "origin_country": {
+            "type": "string",
+            "title": "Origin Country",
+            "description": "Origin country code (3-letter)"
+          },
+          "destination_country": {
+            "type": "string",
+            "title": "Destination Country",
+            "description": "Destination country code (3-letter)"
+          },
+          "transport_mode": {
+            "type": "string",
+            "title": "Transport Mode",
+            "description": "Transportation mode",
+            "default": "road_truck"
+          },
+          "product_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Category",
+            "description": "Product category",
+            "default": "general"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Kg",
+            "description": "Total weight in kg"
+          },
+          "origin_latitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Latitude"
+          },
+          "origin_longitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Longitude"
+          },
+          "destination_latitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Destination Latitude"
+          },
+          "destination_longitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Destination Longitude"
+          },
+          "custom_emission_factors": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custom Emission Factors",
+            "description": "Custom emission factors override"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_name",
+          "origin_country",
+          "destination_country"
+        ],
+        "title": "CarbonCalculationRequest",
+        "description": "Carbon footprint calculation request model"
+      },
+      "CarbonCalculationResponse": {
+        "properties": {
+          "total_emissions_kg_co2e": {
+            "type": "number",
+            "title": "Total Emissions Kg Co2E"
+          },
+          "production_emissions": {
+            "type": "number",
+            "title": "Production Emissions"
+          },
+          "transportation_emissions": {
+            "type": "number",
+            "title": "Transportation Emissions"
+          },
+          "scope_1_emissions": {
+            "type": "number",
+            "title": "Scope 1 Emissions"
+          },
+          "scope_2_emissions": {
+            "type": "number",
+            "title": "Scope 2 Emissions"
+          },
+          "scope_3_emissions": {
+            "type": "number",
+            "title": "Scope 3 Emissions"
+          },
+          "carbon_cost_usd": {
+            "type": "number",
+            "title": "Carbon Cost Usd"
+          },
+          "carbon_trading_opportunities": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Carbon Trading Opportunities"
+          },
+          "calculation_confidence": {
+            "type": "number",
+            "title": "Calculation Confidence"
+          },
+          "response_time_ms": {
+            "type": "number",
+            "title": "Response Time Ms"
+          },
+          "calculation_method": {
+            "type": "string",
+            "title": "Calculation Method"
+          },
+          "data_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Data Sources"
+          },
+          "production_breakdown": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Production Breakdown"
+          },
+          "transport_breakdown": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Transport Breakdown"
+          },
+          "uncertainty_analysis": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Uncertainty Analysis"
+          },
+          "recommendations": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommendations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_emissions_kg_co2e",
+          "production_emissions",
+          "transportation_emissions",
+          "scope_1_emissions",
+          "scope_2_emissions",
+          "scope_3_emissions",
+          "carbon_cost_usd",
+          "carbon_trading_opportunities",
+          "calculation_confidence",
+          "response_time_ms",
+          "calculation_method",
+          "data_sources",
+          "production_breakdown",
+          "transport_breakdown",
+          "uncertainty_analysis"
+        ],
+        "title": "CarbonCalculationResponse",
+        "description": "Carbon footprint calculation response model"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MultiRouteRequest": {
+        "properties": {
+          "routes": {
+            "items": {
+              "$ref": "#/components/schemas/RouteRequest"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Routes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "routes"
+        ],
+        "title": "MultiRouteRequest",
+        "description": "Request model for multiple route comparison"
+      },
+      "PaginatedRecommendationResponse": {
+        "properties": {
+          "total_suppliers": {
+            "type": "integer",
+            "title": "Total Suppliers"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          },
+          "items": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_suppliers",
+          "page",
+          "page_size",
+          "total_pages",
+          "items"
+        ],
+        "title": "PaginatedRecommendationResponse",
+        "description": "Paginated response model for recommendations."
+      },
+      "RecommendationRequest": {
+        "properties": {
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Weights",
+            "example": {
+              "cost_index": 0.3,
+              "esg_score": 0.4,
+              "geographic_proximity": 0.1,
+              "reliability_score": 0.2
+            }
+          },
+          "top_n": {
+            "type": "integer",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Top N",
+            "default": 3
+          },
+          "page": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Page",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "maximum": 100.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Page Size",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "required": [
+          "weights"
+        ],
+        "title": "RecommendationRequest",
+        "description": "Request model for MCDA recommendations."
+      },
+      "RecommendationResult": {
+        "properties": {
+          "recommended_suppliers": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Recommended Suppliers",
+            "description": "List of recommended suppliers with their scores."
+          }
+        },
+        "type": "object",
+        "required": [
+          "recommended_suppliers"
+        ],
+        "title": "RecommendationResult",
+        "description": "Data model for a recommendation result."
+      },
+      "RouteRequest": {
+        "properties": {
+          "origin": {
+            "type": "string",
+            "title": "Origin",
+            "description": "Origin location name"
+          },
+          "destination": {
+            "type": "string",
+            "title": "Destination",
+            "description": "Destination location name"
+          },
+          "weight_tonnes": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Weight Tonnes",
+            "description": "Shipment weight in tonnes",
+            "default": 1.0
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority",
+            "description": "Optimization priority: carbon, cost, time, balanced",
+            "default": "balanced"
+          }
+        },
+        "type": "object",
+        "required": [
+          "origin",
+          "destination"
+        ],
+        "title": "RouteRequest",
+        "description": "Request model for route optimization"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

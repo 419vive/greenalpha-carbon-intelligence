@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Main GreenAlpha API service
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: greenalpha-api
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - PORT=8000
+      - WORKERS=${WORKERS:-1}
+      - REDIS_HOST=redis
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - greenalpha-network
+
+  # Redis for caching and session management
+  redis:
+    image: "redis:7-alpine"
+    container_name: greenalpha-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-greenalpha2024}
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - greenalpha-network
+
+  # Nginx reverse proxy (for production)
+  nginx:
+    image: nginx:alpine
+    container_name: greenalpha-nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - greenalpha-network
+    profiles:
+      - production
+
+# Named volumes for persistent data
+volumes:
+  redis-data:
+    driver: local
+
+# Custom network for service communication
+networks:
+  greenalpha-network:
+    driver: bridge

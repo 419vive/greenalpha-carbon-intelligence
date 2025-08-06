@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenAlpha Carbon Calculator - Executive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .calculator-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .calculator-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group select:focus, .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .calculate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .emission-result {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .breakdown-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .breakdown-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .response-time {
+            text-align: center;
+            margin-top: 20px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .demo-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .demo-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.4;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-btn:hover {
+            background: linear-gradient(135deg, #219a52 0%, #27ae60 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+        
+        .demo-btn small {
+            display: block;
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #667eea;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 GreenAlpha</h1>
+            <p>Carbon Calculator - Executive Demo</p>
+        </div>
+        
+        <div class="calculator-card">
+            <h2 class="calculator-title">🎯 Executive Demo Scenarios - Click to Test</h2>
+            <div class="demo-buttons">
+                <button class="demo-btn" onclick="loadDemo('smartphone')">
+                    📱 High-Impact Scenario<br>
+                    <small>Smartphone: China→USA (Air Freight)</small>
+                </button>
+                <button class="demo-btn" onclick="loadDemo('laptop')">
+                    💻 Eco-Friendly Scenario<br>
+                    <small>Laptop: Germany→Japan (Sea Freight)</small>
+                </button>
+                <button class="demo-btn" onclick="loadDemo('tshirt')">
+                    👕 Fashion Industry<br>
+                    <small>T-shirt: India→UK (Sea Freight)</small>
+                </button>
+            </div>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3 style="color: #2c5530; margin-bottom: 15px;">🚀 Ready-to-Test Scenarios</h3>
+                <p style="color: #2c5530; margin-bottom: 10px;">
+                    <strong>Click any scenario above to instantly see real carbon calculations!</strong>
+                </p>
+                <ul style="color: #2c5530; margin-left: 20px;">
+                    <li>📱 <strong>High-Impact:</strong> Fast delivery, high emissions (Air freight)</li>
+                    <li>💻 <strong>Eco-Friendly:</strong> Slower delivery, lower emissions (Sea freight)</li>
+                    <li>👕 <strong>Fashion:</strong> Textile industry carbon footprint analysis</li>
+                </ul>
+            </div>
+            
+            <h2 class="calculator-title">Carbon Footprint Calculator</h2>
+            
+            <form id="calculatorForm">
+                <div class="form-group">
+                    <label for="product">Product:</label>
+                    <select id="product" required>
+                        <option value="">Select a product...</option>
+                        <option value="smartphone">Smartphone</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="t-shirt">T-shirt</option>
+                        <option value="tablet">Tablet</option>
+                        <option value="jeans">Jeans</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="origin">Origin Country:</label>
+                    <select id="origin" required>
+                        <option value="">Select origin...</option>
+                        <option value="CHN">China</option>
+                        <option value="USA">United States</option>
+                        <option value="DEU">Germany</option>
+                        <option value="JPN">Japan</option>
+                        <option value="IND">India</option>
+                        <option value="GBR">United Kingdom</option>
+                        <option value="FRA">France</option>
+                        <option value="ITA">Italy</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="destination">Destination Country:</label>
+                    <select id="destination" required>
+                        <option value="">Select destination...</option>
+                        <option value="CHN">China</option>
+                        <option value="USA">United States</option>
+                        <option value="DEU">Germany</option>
+                        <option value="JPN">Japan</option>
+                        <option value="IND">India</option>
+                        <option value="GBR">United Kingdom</option>
+                        <option value="FRA">France</option>
+                        <option value="ITA">Italy</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transport">Transport Mode:</label>
+                    <select id="transport" required>
+                        <option value="">Select transport...</option>
+                        <option value="air_freight">Air Freight (Fast, High Emissions)</option>
+                        <option value="sea_freight">Sea Freight (Slow, Low Emissions)</option>
+                        <option value="road_truck">Road Truck (Medium Speed/Emissions)</option>
+                        <option value="rail">Rail (Eco-Friendly)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="10000" required>
+                </div>
+                
+                <button type="submit" class="calculate-btn" id="calculateBtn">
+                    Calculate Carbon Footprint
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <p>🔄 Calculating carbon footprint...</p>
+            </div>
+            
+            <div class="error" id="error"></div>
+            
+            <div class="results" id="results">
+                <h3>Carbon Footprint Results</h3>
+                <div class="emission-result" id="totalEmissions">0 kg CO₂e</div>
+                
+                <div class="breakdown">
+                    <div class="breakdown-item">
+                        <div class="breakdown-value" id="productionEmissions">0</div>
+                        <div>Production Emissions</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-value" id="transportEmissions">0</div>
+                        <div>Transport Emissions</div>
+                    </div>
+                </div>
+                
+                <div class="response-time" id="responseTime">
+                    ⚡ Calculated in 0ms
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        // Demo scenarios
+        const demos = {
+            smartphone: {
+                product: 'smartphone',
+                origin: 'CHN',
+                destination: 'USA',
+                transport: 'air_freight',
+                quantity: 1
+            },
+            laptop: {
+                product: 'laptop',
+                origin: 'DEU',
+                destination: 'JPN',
+                transport: 'sea_freight',
+                quantity: 1
+            },
+            tshirt: {
+                product: 't-shirt',
+                origin: 'IND',
+                destination: 'GBR',
+                transport: 'sea_freight',
+                quantity: 1
+            }
+        };
+        
+        function loadDemo(type) {
+            const demo = demos[type];
+            document.getElementById('product').value = demo.product;
+            document.getElementById('origin').value = demo.origin;
+            document.getElementById('destination').value = demo.destination;
+            document.getElementById('transport').value = demo.transport;
+            document.getElementById('quantity').value = demo.quantity;
+            calculateCarbon();
+        }
+        
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateCarbon();
+        });
+        
+        async function calculateCarbon() {
+            const startTime = Date.now();
+            
+            // Get form values
+            const product = document.getElementById('product').value;
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const transport = document.getElementById('transport').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            // Validate
+            if (!product || !origin || !destination || !transport || !quantity) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('calculateBtn').disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/carbon/calculate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_name: product,
+                        quantity: quantity,
+                        origin_country: origin,
+                        destination_country: destination,
+                        transport_mode: transport
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const responseTime = Date.now() - startTime;
+                
+                // Display results
+                displayResults(data, responseTime);
+                
+            } catch (error) {
+                console.error('Calculation error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    if (window.location.protocol === 'file:') {
+                        showError('❌ Please access the website via http://localhost:8000 instead of opening the HTML file directly.');
+                    } else {
+                        showError('❌ Cannot connect to API server. Please start the server with: python main.py');
+                    }
+                } else {
+                    showError(`❌ Error: ${error.message}. Please check if the API server is running.`);
+                }
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('calculateBtn').disabled = false;
+            }
+        }
+        
+        function displayResults(data, responseTime) {
+            document.getElementById('totalEmissions').textContent = 
+                `${data.total_emissions_kg_co2e.toFixed(1)} kg CO₂e`;
+            document.getElementById('productionEmissions').textContent = 
+                `${data.production_emissions.toFixed(1)} kg`;
+            document.getElementById('transportEmissions').textContent = 
+                `${data.transportation_emissions.toFixed(1)} kg`;
+            document.getElementById('responseTime').textContent = 
+                `⚡ Calculated in ${responseTime}ms`;
+            
+            document.getElementById('results').classList.add('show');
+        }
+        
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+        
+        // Test API connection on load
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    console.log('✅ API connection successful');
+                    document.getElementById('error').style.display = 'none';
+                } else {
+                    showError('⚠️ API server not responding. Please start the server with: python main.py');
+                }
+            } catch (error) {
+                console.error('API connection error:', error);
+                if (window.location.protocol === 'file:') {
+                    showError('⚠️ Please access the website via http://localhost:8000 instead of opening the HTML file directly.');
+                } else {
+                    showError('⚠️ Cannot connect to API server. Please start the server with: python main.py');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

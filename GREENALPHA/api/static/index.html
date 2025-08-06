@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenAlpha - Carbon Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #2d3748 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #4299e1, #48bb78);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-bottom: 60px;
+            max-width: 800px;
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .platform-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .platform-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(66, 153, 225, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .platform-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .platform-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+        
+        .platform-card p {
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .platform-card .features {
+            list-style: none;
+            text-align: left;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+        
+        .platform-card .features li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .platform-card .features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+        }
+        
+        .status-bar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48bb78;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(66, 153, 225, 0.2);
+            backdrop-filter: blur(10px);
+            color: #63b3ed;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+            font-size: 0.9rem;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .platform-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>🌱 GreenAlpha</h1>
+        <p>Advanced Carbon Intelligence Platform with Real-time Analytics & AI-Powered Insights</p>
+        
+        <div class="platform-grid">
+            <div class="platform-card" onclick="window.location.href='simple.html'">
+                <span class="icon">🧮</span>
+                <h3>Carbon Calculator</h3>
+                <p>Executive-friendly carbon footprint calculator with instant results and professional reporting.</p>
+                <ul class="features">
+                    <li>One-click demo scenarios</li>
+                    <li>Real-time calculations < 50ms</li>
+                    <li>Global coverage (221 countries)</li>
+                    <li>IPCC 2021 compliant</li>
+                </ul>
+            </div>
+            
+            <div class="platform-card" onclick="window.location.href='dashboard.html'">
+                <span class="icon">📊</span>
+                <h3>Executive Dashboard</h3>
+                <p>Comprehensive dashboard with interactive charts, KPIs, and real-time performance monitoring.</p>
+                <ul class="features">
+                    <li>Multi-widget dashboard</li>
+                    <li>Interactive visualizations</li>
+                    <li>Real-time performance metrics</li>
+                    <li>Export & reporting tools</li>
+                </ul>
+            </div>
+            
+            <div class="platform-card" onclick="window.location.href='analytics.html'">
+                <span class="icon">🔬</span>
+                <h3>Analytics Platform</h3>
+                <p>Advanced analytics with AI-powered insights, global trends, and predictive modeling.</p>
+                <ul class="features">
+                    <li>Global emissions heatmaps</li>
+                    <li>Time series analysis</li>
+                    <li>Transport optimization</li>
+                    <li>Carbon arbitrage analysis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-indicator"></span>
+            <span>System Online</span>
+        </div>
+        <div class="status-item">
+            <span>🌍 221 Countries</span>
+        </div>
+        <div class="status-item">
+            <span>⚡ < 50ms Response</span>
+        </div>
+        <div class="status-item">
+            <span>🔥 Real-time Data</span>
+        </div>
+        <div class="status-item">
+            <span>🤖 AI-Powered</span>
+        </div>
+    </div>
+    
+    <div class="loading-message" id="loadingMessage">
+        🚀 Choose your platform above to begin carbon intelligence analysis
+    </div>
+
+    <script>
+        // Check API health on load
+        async function checkSystemHealth() {
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ System health check passed:', data.status);
+                    
+                    // Update loading message
+                    setTimeout(() => {
+                        document.getElementById('loadingMessage').textContent = '✅ All systems operational - Ready for analysis';
+                    }, 2000);
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        const msg = document.getElementById('loadingMessage');
+                        if (msg) {
+                            msg.style.opacity = '0';
+                            setTimeout(() => msg.remove(), 500);
+                        }
+                    }, 5000);
+                }
+            } catch (error) {
+                console.error('❌ System health check failed:', error);
+                document.getElementById('loadingMessage').textContent = '⚠️ Starting servers... Please wait a moment';
+            }
+        }
+
+        // Auto-redirect logic (optional)
+        let autoRedirectTimer;
+        
+        function startAutoRedirect() {
+            // Auto-redirect to simple.html after 10 seconds if no interaction
+            autoRedirectTimer = setTimeout(() => {
+                window.location.href = 'simple.html';
+            }, 10000);
+        }
+
+        function cancelAutoRedirect() {
+            if (autoRedirectTimer) {
+                clearTimeout(autoRedirectTimer);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSystemHealth();
+            startAutoRedirect();
+            
+            // Cancel auto-redirect on any interaction
+            document.addEventListener('click', cancelAutoRedirect);
+            document.addEventListener('keypress', cancelAutoRedirect);
+        });
+    </script>
+</body>
+</html>

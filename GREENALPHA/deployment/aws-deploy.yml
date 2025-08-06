@@ -1,0 +1,141 @@
+# AWS ECS Deployment Configuration for GreenAlpha
+version: '3'
+
+# Task Definition for ECS
+x-aws-cloudformation:
+  Resources:
+    # ECS Cluster
+    GreenAlphaCluster:
+      Type: AWS::ECS::Cluster
+      Properties:
+        ClusterName: greenalpha-production
+        CapacityProviders:
+          - FARGATE
+          - FARGATE_SPOT
+        DefaultCapacityProviderStrategy:
+          - CapacityProvider: FARGATE
+            Weight: 1
+          - CapacityProvider: FARGATE_SPOT
+            Weight: 4
+
+    # Task Definition
+    GreenAlphaTaskDefinition:
+      Type: AWS::ECS::TaskDefinition
+      Properties:
+        Family: greenalpha-api
+        NetworkMode: awsvpc
+        RequiresCompatibilities:
+          - FARGATE
+        Cpu: 512
+        Memory: 1024
+        ExecutionRoleArn: !Ref ECSExecutionRole
+        TaskRoleArn: !Ref ECSTaskRole
+        ContainerDefinitions:
+          - Name: greenalpha-api
+            Image: your-registry/greenalpha:latest
+            PortMappings:
+              - ContainerPort: 8000
+                Protocol: tcp
+            Environment:
+              - Name: PORT
+                Value: "8000"
+              - Name: ENVIRONMENT  
+                Value: "production"
+              - Name: REDIS_HOST
+                Value: !GetAtt ElastiCacheCluster.RedisEndpoint.Address
+            HealthCheck:
+              Command:
+                - CMD-SHELL
+                - curl -f http://localhost:8000/health || exit 1
+              Interval: 30
+              Timeout: 10
+              Retries: 3
+              StartPeriod: 60
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: !Ref LogGroup
+                awslogs-region: !Ref AWS::Region
+                awslogs-stream-prefix: ecs
+
+    # Application Load Balancer
+    GreenAlphaALB:
+      Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+      Properties:
+        Name: greenalpha-alb
+        Scheme: internet-facing
+        Type: application
+        Subnets: 
+          - !Ref PublicSubnet1
+          - !Ref PublicSubnet2
+        SecurityGroups:
+          - !Ref ALBSecurityGroup
+
+    # ECS Service
+    GreenAlphaService:
+      Type: AWS::ECS::Service
+      Properties:
+        Cluster: !Ref GreenAlphaCluster
+        TaskDefinition: !Ref GreenAlphaTaskDefinition
+        LaunchType: FARGATE
+        DesiredCount: 2
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            SecurityGroups:
+              - !Ref ECSSecurityGroup
+            Subnets:
+              - !Ref PrivateSubnet1
+              - !Ref PrivateSubnet2
+            AssignPublicIp: DISABLED
+        LoadBalancers:
+          - ContainerName: greenalpha-api
+            ContainerPort: 8000
+            TargetGroupArn: !Ref TargetGroup
+
+    # ElastiCache Redis Cluster
+    ElastiCacheCluster:
+      Type: AWS::ElastiCache::CacheCluster
+      Properties:
+        CacheNodeType: cache.t3.micro
+        Engine: redis
+        NumCacheNodes: 1
+        VpcSecurityGroupIds:
+          - !Ref RedisSecurityGroup
+        CacheSubnetGroupName: !Ref CacheSubnetGroup
+
+services:
+  # Development/Testing with Docker Compose
+  api:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/greenalpha:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=production
+      - AWS_REGION=${AWS_REGION}
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+
+# Environment variables for deployment
+x-aws-environment:
+  AWS_REGION: us-west-2
+  AWS_ACCOUNT_ID: "123456789012"  # Replace with actual account ID
+  IMAGE_TAG: latest
+  ENVIRONMENT: production

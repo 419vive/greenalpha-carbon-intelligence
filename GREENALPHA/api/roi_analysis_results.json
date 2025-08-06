@@ -1,0 +1,200 @@
+{
+  "Conservative Scenario": {
+    "analysis_parameters": {
+      "transaction_volume": 50000000,
+      "market_penetration_percentage": 5,
+      "customer_count": 25,
+      "time_period_months": 12,
+      "analysis_date": "2025-08-06T01:54:12.633138"
+    },
+    "value_components": {
+      "time_value_savings": {
+        "total_transactions": 1000,
+        "delay_eliminated_months": 6,
+        "cost_of_delay_per_transaction": 9000.0,
+        "total_delay_cost_savings": 9000000.0,
+        "monthly_savings": 750000.0
+      },
+      "revenue_opportunities": {
+        "market_penetration_percentage": 5,
+        "addressable_market_value": 25000000.0,
+        "carbon_premium_revenue": 3750000.0,
+        "enabled_transaction_revenue": 7500000.0,
+        "competitive_advantage_revenue": 1250000.0,
+        "total_revenue_opportunity": 12500000.0,
+        "monthly_revenue_potential": 1041666.6666666666
+      },
+      "operational_savings": {
+        "customer_count": 25,
+        "compliance_automation_savings": 6000000.0,
+        "supply_chain_optimization_savings": 10000000.0,
+        "staff_productivity_savings": 1500000.0,
+        "total_operational_savings": 17500000.0,
+        "monthly_operational_savings": 1458333.3333333333,
+        "savings_per_customer": 700000.0
+      },
+      "risk_mitigation": {
+        "regulatory_compliance_risk_mitigation": 1000000.0,
+        "reputation_risk_mitigation": 500000.0,
+        "supply_chain_disruption_risk_mitigation": 2500000.0,
+        "total_risk_mitigation_value": 4000000.0
+      }
+    },
+    "cost_analysis": {
+      "development_cost_sunk": 500000,
+      "deployment_cost": 50000,
+      "operating_cost": 300000,
+      "support_cost": 125000.0,
+      "total_investment_required": 475000.0,
+      "monthly_run_rate": 35416.666666666664
+    },
+    "roi_summary": {
+      "total_benefits": 43000000.0,
+      "total_costs": 475000.0,
+      "net_benefit": 42525000.0,
+      "roi_percentage": 8952.631578947368,
+      "payback_period_months": 0.1325581395348837,
+      "monthly_net_benefit": 3543750.0
+    },
+    "executive_summary": {
+      "investment_required": "$475,000",
+      "total_return": "$43,000,000",
+      "net_profit": "$42,525,000",
+      "roi": "8953%",
+      "payback_period": "0.1 months",
+      "monthly_profit": "$3,543,750"
+    }
+  },
+  "Base Case Scenario": {
+    "analysis_parameters": {
+      "transaction_volume": 100000000,
+      "market_penetration_percentage": 10,
+      "customer_count": 50,
+      "time_period_months": 12,
+      "analysis_date": "2025-08-06T01:54:12.633206"
+    },
+    "value_components": {
+      "time_value_savings": {
+        "total_transactions": 2000,
+        "delay_eliminated_months": 6,
+        "cost_of_delay_per_transaction": 9000.0,
+        "total_delay_cost_savings": 18000000.0,
+        "monthly_savings": 1500000.0
+      },
+      "revenue_opportunities": {
+        "market_penetration_percentage": 10,
+        "addressable_market_value": 50000000.0,
+        "carbon_premium_revenue": 7500000.0,
+        "enabled_transaction_revenue": 15000000.0,
+        "competitive_advantage_revenue": 2500000.0,
+        "total_revenue_opportunity": 25000000.0,
+        "monthly_revenue_potential": 2083333.3333333333
+      },
+      "operational_savings": {
+        "customer_count": 50,
+        "compliance_automation_savings": 12000000.0,
+        "supply_chain_optimization_savings": 20000000.0,
+        "staff_productivity_savings": 3000000.0,
+        "total_operational_savings": 35000000.0,
+        "monthly_operational_savings": 2916666.6666666665,
+        "savings_per_customer": 700000.0
+      },
+      "risk_mitigation": {
+        "regulatory_compliance_risk_mitigation": 2000000.0,
+        "reputation_risk_mitigation": 1000000.0,
+        "supply_chain_disruption_risk_mitigation": 5000000.0,
+        "total_risk_mitigation_value": 8000000.0
+      }
+    },
+    "cost_analysis": {
+      "development_cost_sunk": 500000,
+      "deployment_cost": 50000,
+      "operating_cost": 300000,
+      "support_cost": 250000.0,
+      "total_investment_required": 600000.0,
+      "monthly_run_rate": 45833.333333333336
+    },
+    "roi_summary": {
+      "total_benefits": 86000000.0,
+      "total_costs": 600000.0,
+      "net_benefit": 85400000.0,
+      "roi_percentage": 14233.333333333334,
+      "payback_period_months": 0.08372093023255814,
+      "monthly_net_benefit": 7116666.666666667
+    },
+    "executive_summary": {
+      "investment_required": "$600,000",
+      "total_return": "$86,000,000",
+      "net_profit": "$85,400,000",
+      "roi": "14233%",
+      "payback_period": "0.1 months",
+      "monthly_profit": "$7,116,667"
+    }
+  },
+  "Aggressive Scenario": {
+    "analysis_parameters": {
+      "transaction_volume": 200000000,
+      "market_penetration_percentage": 20,
+      "customer_count": 100,
+      "time_period_months": 12,
+      "analysis_date": "2025-08-06T01:54:12.633239"
+    },
+    "value_components": {
+      "time_value_savings": {
+        "total_transactions": 4000,
+        "delay_eliminated_months": 6,
+        "cost_of_delay_per_transaction": 9000.0,
+        "total_delay_cost_savings": 36000000.0,
+        "monthly_savings": 3000000.0
+      },
+      "revenue_opportunities": {
+        "market_penetration_percentage": 20,
+        "addressable_market_value": 100000000.0,
+        "carbon_premium_revenue": 15000000.0,
+        "enabled_transaction_revenue": 30000000.0,
+        "competitive_advantage_revenue": 5000000.0,
+        "total_revenue_opportunity": 50000000.0,
+        "monthly_revenue_potential": 4166666.6666666665
+      },
+      "operational_savings": {
+        "customer_count": 100,
+        "compliance_automation_savings": 24000000.0,
+        "supply_chain_optimization_savings": 40000000.0,
+        "staff_productivity_savings": 6000000.0,
+        "total_operational_savings": 70000000.0,
+        "monthly_operational_savings": 5833333.333333333,
+        "savings_per_customer": 700000.0
+      },
+      "risk_mitigation": {
+        "regulatory_compliance_risk_mitigation": 4000000.0,
+        "reputation_risk_mitigation": 2000000.0,
+        "supply_chain_disruption_risk_mitigation": 10000000.0,
+        "total_risk_mitigation_value": 16000000.0
+      }
+    },
+    "cost_analysis": {
+      "development_cost_sunk": 500000,
+      "deployment_cost": 50000,
+      "operating_cost": 300000,
+      "support_cost": 500000.0,
+      "total_investment_required": 850000.0,
+      "monthly_run_rate": 66666.66666666667
+    },
+    "roi_summary": {
+      "total_benefits": 172000000.0,
+      "total_costs": 850000.0,
+      "net_benefit": 171150000.0,
+      "roi_percentage": 20135.29411764706,
+      "payback_period_months": 0.059302325581395345,
+      "monthly_net_benefit": 14262500.0
+    },
+    "executive_summary": {
+      "investment_required": "$850,000",
+      "total_return": "$172,000,000",
+      "net_profit": "$171,150,000",
+      "roi": "20135%",
+      "payback_period": "0.1 months",
+      "monthly_profit": "$14,262,500"
+    }
+  }
+}

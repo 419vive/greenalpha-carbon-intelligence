@@ -1,0 +1,311 @@
+name: GreenAlpha CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+
+jobs:
+  # Code Quality Checks
+  quality:
+    runs-on: ubuntu-latest
+    name: Code Quality & Security
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r api/requirements.txt
+        pip install flake8 black isort safety bandit
+        
+    - name: Code formatting check
+      run: |
+        black --check api/
+        isort --check-only api/
+        
+    - name: Lint with flake8
+      run: |
+        flake8 api/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 api/ --count --max-complexity=10 --max-line-length=127 --statistics
+        
+    - name: Security audit
+      run: |
+        safety check -r api/requirements.txt
+        bandit -r api/ -f json
+        
+    - name: Type checking
+      run: |
+        pip install mypy
+        mypy api/ --ignore-missing-imports
+
+  # Unit and Integration Tests
+  test:
+    runs-on: ubuntu-latest
+    name: Test Suite
+    needs: quality
+    
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r api/requirements.txt
+        pip install pytest pytest-asyncio pytest-cov httpx
+        
+    - name: Run unit tests
+      run: |
+        cd api
+        pytest tests/ -v --cov=. --cov-report=xml --cov-report=html
+        
+    - name: Run integration tests
+      run: |
+        cd api
+        python -m pytest test_comprehensive_endpoints.py -v
+        
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./api/coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  # Performance Testing
+  performance:
+    runs-on: ubuntu-latest
+    name: Performance Tests
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r api/requirements.txt
+        pip install locust
+        
+    - name: Start application
+      run: |
+        cd api
+        python main.py &
+        sleep 10
+        
+    - name: Run performance tests
+      run: |
+        cd api
+        # Quick performance validation
+        curl -f http://localhost:8000/health || exit 1
+        
+        # Response time test
+        start_time=$(date +%s%N)
+        curl -X POST http://localhost:8000/carbon/calculate \
+          -H "Content-Type: application/json" \
+          -d '{"product_name":"smartphone","quantity":1,"origin_country":"CHN","destination_country":"USA","transport_mode":"air_freight"}' \
+          -o /dev/null -s
+        end_time=$(date +%s%N)
+        response_time=$(( (end_time - start_time) / 1000000 ))
+        
+        echo "Response time: ${response_time}ms"
+        if [ $response_time -gt 500 ]; then
+          echo "Response time too slow: ${response_time}ms > 500ms"
+          exit 1
+        fi
+
+  # Docker Build & Test
+  docker:
+    runs-on: ubuntu-latest
+    name: Docker Build & Test
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      run: |
+        docker build -t greenalpha:test .
+        
+    - name: Test Docker container
+      run: |
+        # Start container
+        docker run -d --name greenalpha-test -p 8001:8000 greenalpha:test
+        sleep 30
+        
+        # Health check
+        curl -f http://localhost:8001/health || exit 1
+        
+        # API test
+        curl -X POST http://localhost:8001/carbon/calculate \
+          -H "Content-Type: application/json" \
+          -d '{"product_name":"smartphone","quantity":1,"origin_country":"CHN","destination_country":"USA","transport_mode":"air_freight"}' \
+          || exit 1
+          
+        # Cleanup
+        docker stop greenalpha-test
+        docker rm greenalpha-test
+
+  # Security Scanning
+  security:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    needs: quality
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # Frontend Testing
+  frontend:
+    runs-on: ubuntu-latest
+    name: Frontend Tests
+    needs: quality
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        
+    - name: Install frontend dependencies
+      run: |
+        npm install -g http-server
+        
+    - name: Test static file serving
+      run: |
+        cd api/static
+        http-server -p 3000 &
+        sleep 5
+        
+        # Test file accessibility
+        curl -f http://localhost:3000/index.html || exit 1
+        curl -f http://localhost:3000/simple.html || exit 1
+        curl -f http://localhost:3000/dashboard.html || exit 1
+        curl -f http://localhost:3000/analytics.html || exit 1
+
+  # Deployment (only on main branch)
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    needs: [test, performance, docker, security, frontend]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Build and push Docker image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: greenalpha
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        
+    - name: Deploy to ECS
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: greenalpha
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Update ECS service with new image
+        aws ecs update-service \
+          --cluster greenalpha-production \
+          --service greenalpha-api \
+          --force-new-deployment
+          
+    - name: Verify deployment
+      run: |
+        # Wait for deployment to complete
+        aws ecs wait services-stable \
+          --cluster greenalpha-production \
+          --services greenalpha-api
+          
+        echo "Deployment completed successfully!"
+
+  # Notification
+  notify:
+    runs-on: ubuntu-latest
+    name: Notify Results
+    needs: [deploy]
+    if: always()
+    
+    steps:
+    - name: Notify success
+      if: success()
+      run: |
+        echo "🎉 All tests passed and deployment successful!"
+        
+    - name: Notify failure
+      if: failure()
+      run: |
+        echo "❌ Pipeline failed. Check logs for details."
